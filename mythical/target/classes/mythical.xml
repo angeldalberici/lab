@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+    <http:listener-config name="mythical-httpListenerConfig" host="0.0.0.0" port="15000" doc:name="HTTP Listener Configuration"/>
+    <apikit:config name="mythical-config" raml="mythical.raml" consoleEnabled="true" consolePath="console" doc:name="Router"/>
+    <flow name="mythical-main">
+        <http:listener config-ref="mythical-httpListenerConfig" path="/api/*" doc:name="HTTP"/>
+        <apikit:router config-ref="mythical-config" doc:name="APIkit Router"/>
+        <exception-strategy ref="mythical-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/>
+    </flow>
+    <flow name="get:/quote:mythical-config">
+        <set-payload value="{&#xA;  &quot;quote_id&quot;: &quot;quotWDv2VzHp&quot;,&#xA;  &quot;created_at&quot;: &quot;2013-04-22T05:40:57Z&quot;,&#xA;  &quot;currency&quot;: &quot;USD&quot;,&#xA;  &quot;amount&quot;: 23.34&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <flow name="get:/shipment/{shipment_id}:mythical-config">
+        <set-payload value="{&#xA;  &quot;tracking_number&quot;: &quot;34183941734713048&quot;,&#xA;  &quot;created_at&quot;: &quot;2013-04-22T05:40:57Z&quot;,&#xA;  &quot;pickup_time&quot;: &quot;2013-04-23T09:30:00Z&quot;,&#xA;  &quot;status&quot;: &quot;delivered&quot;,&#xA;  &quot;scan_form&quot;: &quot;sf_m4WmYiew&quot;&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <flow name="post:/shipment:mythical-config">
+        <set-payload value="{&#xA;  &quot;shipment_id&quot;: &quot;prclWDv2VzHp&quot;,&#xA;  &quot;tracking_number&quot;: &quot;34183941734713048&quot;,&#xA;  &quot;created_at&quot;: &quot;2013-04-22T05:40:57Z&quot;,&#xA;  &quot;pickup_time&quot;: &quot;2013-04-23T09:30:00Z&quot;&#xA;  &quot;scan_form&quot;: &quot;sf_m4WmYiew&quot;&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <apikit:mapping-exception-strategy name="mythical-apiKitGlobalExceptionMapping">
+        <apikit:mapping statusCode="404">
+            <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="405">
+            <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="415">
+            <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="406">
+            <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="400">
+            <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }" doc:name="Set Payload"/>
+        </apikit:mapping>
+    </apikit:mapping-exception-strategy>
+</mule>
