@@ -1,5 +1,5 @@
 Examples from the MuleSoft Free Courses: 
 
-"Intro to Anypoint Platform for APIs" (mythical)
+1. "Intro to Anypoint Platform for APIs" (mythical)
 
-"MuleSoft.U Developer Essentials (Feb 10 - April 6, 2016)"
+2. "MuleSoft.U Developer Essentials (Feb 10 - April 6, 2016)" (apstart)
