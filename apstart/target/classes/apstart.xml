@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- Made by Angel Alberici -->
 <mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -9,7 +9,8 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
     <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="15000" doc:name="HTTP Listener Configuration"/>
     <flow name="apstartFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/sfdc" allowedMethods="GET" doc:name="HTTP"/>
-        <set-payload value="Hello World" doc:name="Set Payload"/>
-        <logger level="INFO" doc:name="Logger 1"/> 
+        <set-payload value="#['Si'.toUpperCase()]" doc:name="Set Payload"/>
+        <set-property propertyName="qpname" value="#[message.inboundProperties.'http.query.params'.name]" doc:name="Property"/>
+        <logger level="INFO" doc:name="Logger 1" message="#[message.outboundProperties.qpname]"/> 
     </flow>
 </mule>
