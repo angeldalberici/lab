@@ -9,9 +9,12 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
     </spring:beans>
     <munit:test name="AssertPayloadValue" description="Test">
         <flow-ref name="SimplePayloadFlow" doc:name="Flow-ref to mavenjenkinsFlow"/>
+        <logger level="INFO" doc:name="Logger"/>
         <munit:assert-true condition="#[payload == 'New payload' ]" doc:name="Assert True"/>
+        <logger level="INFO" doc:name="Logger"/>
     </munit:test>
     <munit:test name="HelloWorldFlowTest" description="Test">
+        <munit:set payload="#[]" doc:name="Set Message"/>
         <flow-ref name="SimpleVariableFlow" doc:name="HelloWorldFlow"/>
         <munit:assert-true condition="#[flowVars.firstVariable == 'Hello world!']" doc:name="Assert True"/>
     </munit:test>
